@@ -1,0 +1,26 @@
+{% load get_dict_value_by_key_name %}
+<html>
+<body>
+
+<a href="/db_survey/edit_schema/?target_schema={{source_schema_id}}&source_cluster_id={{source_cluster_id}}"><b>Take me Back to the Schema List</b></a>
+
+<h1>MODIFY the Tables of Schema</h1>
+<table border="5">
+{% for table_instance in table_form_list %}
+    <tr>
+    {% for form in table_instance %}
+        <td>
+        <form action="" method="post">
+            <table>
+                    {{form.as_table}}
+            </table>
+            <input type="submit" value="submit">
+        </form>
+        </td>
+    {% endfor %}
+    </tr>
+{% endfor %}
+</table>
+
+</body>
+</html>

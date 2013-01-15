@@ -1,0 +1,31 @@
+{% load get_dict_value_by_key_name %}
+
+<html>
+<body>
+
+<a href="/db_survey/modify_cluster_list"><b>Take me Back to the List</b></a>
+<p>Show full info of DB</p>
+
+  {% if cluster_info_dict and cluster_info_key_list %}
+    <h1>MODIFY the info of database Cluster</h1>
+    <form action="" method="get">
+        <table border = "5">
+        <tbody>
+              <tr>
+                 <th>Item</th><th>NEW Value</th><th>CURRENT Value</th>
+          {% for key_item in cluster_info_key_list %}
+              <tr>
+                  <td>{{key_item}}</td>
+                  <td><input  type="text" value="{{cluster_info_dict|key:key_item}}"></td>
+                  <td>{{cluster_info_dict|key:key_item}}</td>
+              </tr>
+          {% endfor %}
+        </tbody>
+        </table>
+        <input type="submit" value="submit">
+        <input type="submit" value="reset">
+    </form>
+  {% endif %}
+
+</body>
+</html>

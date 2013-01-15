@@ -1,0 +1,15 @@
+{% load get_dict_value_by_key_name %}
+<p>Lists of database clusters</p>
+
+<p>Click on the name of DB_Cluster to <b>MODIFY IT</b></p>
+{% if cluster_dict and display_list %}
+
+  <table border="5">
+    {% for display_item in display_list %}
+      <tr>
+        <td><a href="?target_cluster={{cluster_dict|key:display_item}}">{{display_item}}</a></td>
+      </tr>
+    {% endfor %}
+  </table>
+<p><a href="/db_survey/display_cluster_list/">Or, Click here to <b>VIEW</b> the DB info</a></p>
+{% endif %}

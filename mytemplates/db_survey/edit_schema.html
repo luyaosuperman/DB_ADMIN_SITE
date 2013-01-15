@@ -1,0 +1,29 @@
+{% load get_dict_value_by_key_name %}
+
+<html>
+<body>
+
+<a href="/db_survey/modify_cluster_list/?target_cluster={{source_cluster_id}}"><b>Take me Back to the List</b></a>
+<h1>MODIFY the info of database Schema of cluster</h1>
+    <form action="" method="post">
+        <table>
+          <colgroup>
+            <col span="1" style="background-color:rgb(108,186,249)">
+          <colgroup>
+          {{form_schema.as_table}}
+        </table>
+        <input type="submit" value="submit">
+    </form>
+
+{% if table_dict and table_display_list %}
+  <h2>CLICK on the table name to MODIFY the info of TABLE with in this SCHEMA</h2>
+  <table border="5">
+    {% for display_item in table_display_list %}
+      <tr>
+        <td><a href="/db_survey/edit_table/?target_table={{table_dict|key:display_item}}&source_schema_id={{source_schema_id}}">{{display_item}}</a></td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endif %}
+</body>
+</html>

@@ -1,0 +1,38 @@
+<html>
+<head><title>alter defination</title></head>
+
+<body>
+    <h1>Alter the defination of column</h1>
+
+    {% if errors %}
+        <p style="color: red">
+             Please correct the error{{ form.errors|pluralize }} below
+        </p>
+    {% endif %}
+
+    {% if modified %}
+        <ul>
+            <li>Col Name: {{new_col_name}}</li>
+            <li>Set Defination: {{new_col_def}}</li>
+        </ul>
+    {% endif %}
+
+
+    <form action="" method="post">
+        <div class="field">
+            {{form.col_name.errors}}
+            <label for = "id_col_name">Column Name:</label>
+            {{form.col_name}}
+        </div>
+        <div class="field">
+            {{form.col_def.errors}}
+            <label for = "id_col_def">Column Defination:</label>
+            {{form.col_def}}
+        </div>
+        <input type="submit" value="submit">
+    </form>
+
+
+</body>
+
+</html>

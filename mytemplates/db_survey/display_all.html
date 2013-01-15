@@ -1,0 +1,70 @@
+{% load get_dict_value_by_key_name %}
+<html>
+<head>
+
+</head>
+<body>
+<script type="text/javascript">
+  var d=new Date()
+  var text = "Show full info of DB by variable"
+  var hour = d.getHours()
+  if (hour < 12)
+    {document.write("<b>Good Moring!</b><br>")}
+  else
+    {document.write("<b>Good Afternoon!</b><br>")}
+  document.write(text)
+  function disp_alert()
+  {alert("Hello World!")}
+  #disp_alert()
+</script>
+<p><a href="?">Get back to the cluster list</a></p>
+{% if not display_items %}
+  <p>No display_items</p>
+{% endif %}
+{% if not display_keys %}
+  <p>No display_keys</p>
+{% endif %}
+
+{% if schema_dict and schema_display_list %}
+  <h2>Click on the below link to view the schema</h2>
+  <table border="5">
+    {% for display_item in schema_display_list %}
+      <tr>
+        <td><a href="/db_survey/display_schema/?target_schema={{schema_dict|key:display_item}}">{{display_item}}</a></td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endif %}
+
+{% if display_items and display_keys %}
+  <h2>DB Cluster Detail</h2>
+  <table border="5">
+      <colgroup>
+        <col span="2" style="background-color:rgb(108,186,249)">
+        <col span="2" style="background-color:rgb(133,198,250)">
+        <col span="4" style="background-color:rgb(168,214,251)">
+        <col span="7" style="background-color:rgb(196,227,253)">
+      </colgroup>
+  <tr>
+  {% for item in display_keys %}
+    <th>{{item}}</th>
+  {% endfor %}
+  </tr>
+  {% for display_item in display_items %}
+    <tr>
+    {% for display_key in display_keys %}
+      {% if display_item|key:display_key != 'KEY_TOBE_IGNORED' %}
+        {% if display_item|key:display_key %}
+          <td align="center" valign="top" rowspan = "{{display_item|row_span_of_key:display_key}}">{{display_item|key:display_key|safe}}</td>
+        {% else %}
+          <td align="center" valign="top" rowspan = "{{display_item|row_span_of_key:display_key}}">&nbsp;</td>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    </tr>
+  {% endfor %}
+  </table>
+{% endif %}
+</body>
+</html>
+

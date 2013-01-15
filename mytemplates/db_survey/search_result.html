@@ -1,0 +1,12 @@
+<p>You searched for: <strong>{{ query }}</strong></p>
+
+{% if tables %}
+    <p>Found {{ tables|length }} table{{ tables|pluralize }}.</p>
+    <ul>
+        {% for table in tables %}
+        <li>{{ table.table_name }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No table matched your search criteria.</p>
+{% endif %}
