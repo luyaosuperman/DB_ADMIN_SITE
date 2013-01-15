@@ -14,8 +14,8 @@ import random
 
 random.seed()
 
-rrd_data_path = '/home/garadmin/django/1/mysite/db_survey/rrd/'
-rrd_image_path = '/home/garadmin/django/1/mysite/db_survey/rrd/image/'
+rrd_data_path = '/home/garadmin/django/1/DB_ADMIN_SITE/db_survey/rrd/'
+rrd_image_path = '/home/garadmin/django/1/DB_ADMIN_SITE/db_survey/rrd/image/'
 
 def create_or_get_rrd_database(check_item,cluster_name,schema_name='',table_name=''):
     full_file_path = rrd_data_path + check_item + '.' + cluster_name

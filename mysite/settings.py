@@ -47,7 +47,7 @@ USE_TZ = True
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 #MEDIA_ROOT = os.path.join(os.path.dirname(__file__), "media") 
-MEDIA_ROOT = "/home/garadmin/django/1/mysite/db_survey/rrd/image/"
+MEDIA_ROOT = "/home/garadmin/django/1/DB_ADMIN_SITE/db_survey/rrd/image/"
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -67,7 +67,7 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    "/home/garadmin/django/1/mysite/db_survey/rrd/image/",
+    "/home/garadmin/django/1/DB_ADMIN_SITE/db_survey/rrd/image/",
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -110,7 +110,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/home/garadmin/django/1/mysite/mytemplates'
+    '/home/garadmin/django/1/DB_ADMIN_SITE/mytemplates'
 )
 
 INSTALLED_APPS = (
