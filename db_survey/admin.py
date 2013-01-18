@@ -3,6 +3,7 @@ from django.contrib import admin
 #from polls.models import Choice
 
 from db_survey.models import *
+from db_survey.user_models import *
 
 #class ChoiceInline(admin.TabularInline):
 #   model = Choice
@@ -44,3 +45,5 @@ admin.site.register(db_column,db_column_admin)
 admin.site.register(db_table_keys,db_key_admin)
 admin.site.register(db_key_type)
 admin.site.register(db_dictoionary,db_dictoionary_admin)
+admin.site.register(db_user)
+admin.site.register(user_privilege)

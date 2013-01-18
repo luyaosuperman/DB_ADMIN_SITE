@@ -42,20 +42,35 @@ def update_column():
         cluster_db_master_ip = cluster_item.db_master_ip
         cluster_db_backup_ip = cluster_item.db_backup_ip
         schema_list = cluster_item.get_schema_from_mysql()
-        #print schema_list
+        #get schema to delete schema that no longer exists
+        current_schema_list = [d[1] for d in db_schema.custom_manager.get_schema_from_cluster_id(cluster_id)]
+        for schema_to_delete in (set(current_schema_list) - set(schema_list)):
+            db_schema.objects.get(belong_to_cluster = cluster_id, schema_name = schema_to_delete).delete()
+            print "schema %s in cluster %s no longer exists" % (schema_to_delete, cluster_name)
         for schema in schema_list:
             schema_item = db_schema.custom_manager.insert_schema(schema,cluster_item)
+            schema_id = schema_item.id
             tables = schema_item.get_table_belong_to_schema_from_mysql(cluster_db_master_ip)
-            #print schema_item,tables
+            current_tables = [d[1] for d in db_table.custom_manager.get_table_from_schema_id(schema_id)]
+            for table_to_delete in (set(current_tables) - set([d[0] for d in tables])):
+                print "table_to_delete:", table_to_delete
+                db_table.objects.get(belong_to_schema = schema_id, table_name = table_to_delete).delete()
             for table in tables:#[table_name, primary_key]
                 table_item = db_table.custom_manager.insert_table(table[0],schema_item,table[1])
-                #print table[0],table[1]
+                table_id = table_item.id
                 columns = table_item.get_column_belong_to_table_from_mysql(cluster_db_master_ip)
+                current_columns = [d[1] for d in db_column.custom_manager.get_column_from_table_id(table_id)]
+                for column_to_delete in (set(current_columns) - set([d['COLUMN_NAME'] for d in columns])):
+                    db_column.objects.get(belong_to_table = table_id, column_name = column_to_delete).delete()
                 for column in columns:
                     column_item = db_column.custom_manager.insert_column(column, table_item)
+
                 keys = table_item.get_key_belong_to_table_from_mysql(cluster_db_master_ip)
+                current_keys = db_table_keys.custom_manager.get_key_from_table_id(table_id)
+                for key_to_delete in (set([d[1] for d in current_keys]) - set(keys)):
+                    print "key_to_delete:", key_to_delete
+                    db_table_keys.objects.get(belong_to_table = table_id, table_key_def = key_to_delete).delete()
                 for key in keys:
-                    print key
                     key_item = db_table_keys.custom_manager.insert_key(table_item,key)
 
     print "Done!"

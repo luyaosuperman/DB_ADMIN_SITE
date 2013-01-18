@@ -10,6 +10,7 @@ sys.path.append("/root/db_access_list/")
 from  db_access_list import * #db_username db_password db_port of the db access, under /root/db_access_list
 
 from model_gather_data import *
+#from user_models_method import *
 
 
 check_item_list = ['table_rows']
@@ -76,7 +77,10 @@ class db_table_manager(models.Manager):
 
 class db_table_keys_manager(models.Manager):
     def get_key_from_table_id(self, input_id):
-        pass
+        l = []
+        for item in self.filter(belong_to_table=input_id):
+            l.append([item.id , item.table_key_def])
+        return l
     def insert_key(self, new_belong_to_table_instance, new_table_key_def):
         obj, created =  self.get_or_create(belong_to_table = new_belong_to_table_instance, table_key_def = new_table_key_def,
                                              defaults = {'key_def' : ''})
@@ -84,6 +88,11 @@ class db_table_keys_manager(models.Manager):
         
 
 class db_column_manager(models.Manager):
+    def get_column_from_table_id(self,input_id):
+        l = []
+        for item in self.filter(belong_to_table=input_id):
+            l.append([item.id , item.column_name])
+        return l
     def insert_column(self,column,table_instance):
         #l.append({COLUMN_NAME:column[0]},COLUMN_TYPE:column[1],COLUMN_KEY:column[2],COLUMN_DEFAULT:column[3],EXTRA:column[4]})
         column_key = db_key_type.objects.get(key_type_name = column['COLUMN_KEY'])
@@ -117,6 +126,18 @@ class db_cluster(models.Model):
             return ['db_name','db_def']
         else:
             return ['id','db_name','db_master_ip','db_backup_ip','db_def']
+    def get_user_from_mysql(self):
+        l = []
+        conn_src = connect_mysql(self.db_master_ip)
+        cursor_src = conn_src.cursor()
+        #get all the user
+        sql = """select user,host from mysql.user""";
+        cursor_src.execute(sql)
+        for user_item in cursor_src.fetchall():
+            [user,host_ip] =[user_item[0],user_item[1]]
+            l.append([user,host_ip])
+        conn_src.close()
+        return l #[[user,host_ip],...]
 
     def get_schema_from_mysql(self):
         l = []
