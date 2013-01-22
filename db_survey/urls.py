@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^display_all/$', views.display_all),
     url(r'^modify_cluster_list/$', views.modify_cluster_list),
     url(r'^edit_schema/$', views.edit_schema),
-    url(r'^edit_table/$', views.edit_table)
+    url(r'^edit_table/$', views.edit_table),
+    url(r'^modify_user_privilege/$', views.modify_user_privilege)
    
 )

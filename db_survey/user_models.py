@@ -42,7 +42,10 @@ class user_privilege_manager(models.Manager):
         print new_privilege
         privilege_split = new_privilege.split(' ')
         if 'USAGE' in privilege_split or """''@''""" in privilege_split:
-            return False
+            #return False
+            affected_sp = "NA"
+            affected_schema = "NA"
+            affected_table = "NA"
         elif "PROCEDURE" in privilege_split:# I't a procedure, like this: 
             #[u'GRANT', u'EXECUTE', u'ON', u'PROCEDURE', u'`txn`.`sp_refund_payment`', u'TO', u"'ws_auth_write'@'10.10.30.108'"]
             affected_sp = privilege_split[privilege_split.index("PROCEDURE") + 1]

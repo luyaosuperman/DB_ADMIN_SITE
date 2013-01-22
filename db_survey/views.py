@@ -6,6 +6,7 @@ from db_survey.models import *
 from db_survey.model_method import *
 from django.template import RequestContext
 from db_survey.forms import *
+from db_survey.user_view import *
 
 def index(request):
     message = 'Hello!'

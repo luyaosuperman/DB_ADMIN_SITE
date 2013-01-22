@@ -1,0 +1,22 @@
+<html>
+
+    {% if modify_user %}
+        <a href="/db_survey/display_cluster_list/?target_cluster={{source_cluster_id}}"><b>Take me Back to the cluster page</b></a>
+        <h1>Your are modifing user {{user_at_host}} inside DB Cluster {{source_cluster_name}}</h1>
+        <form action="" method="post">
+            {{new_privilege_form}}
+            <input type="submit" value="add this privilege">
+        </form>
+        <table border="5">
+            {% for privilege_item in privilege_list %}
+                <tr>
+                    <td>{{privilege_item}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <form action="" method="post">
+            {{delete_user_form}}
+            <input type="submit" value="Confirm delete user">
+        </form>
+    {% endif %}
+</html>

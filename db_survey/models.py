@@ -73,6 +73,8 @@ class db_table_manager(models.Manager):
     def insert_table(self, new_table_name, new_belong_to_schema_instance, table_primary_keys=''):
         obj, created =  self.get_or_create(belong_to_schema = new_belong_to_schema_instance, table_name = new_table_name,
                               defaults = {'is_new_added':True, 'is_deleted':False, 'table_def':'','table_primary_keys':table_primary_keys})
+        if created == True:
+            print "Table %s added" % (new_table_name,)
         return obj
 
 class db_table_keys_manager(models.Manager):
@@ -123,7 +125,7 @@ class db_cluster(models.Model):
 
     def get_display_fields(self, for_modify = False):
         if for_modify == False:
-            return ['db_name','db_def']
+            return ['db_name','db_def','user_list']
         else:
             return ['id','db_name','db_master_ip','db_backup_ip','db_def']
     def get_user_from_mysql(self):
@@ -169,6 +171,25 @@ class db_cluster(models.Model):
            _columns += _p.column_count
        return _columns
     column_count = property(_column_count)
+    def _user_list(self):# get the user belong to this cluster
+        user_list_string = """<a href=/db_survey/modify_user_privilege/?target_cluster=%s>""" % (self.id,) + "Add new user" + "</a><br>"#should return a string
+        conn_src = connect_mysql("10.10.50.161")
+        cursor_src = conn_src.cursor()
+        for db_user_item in self.db_user_set.all():
+            db_master_ip_last_seg=self.db_master_ip.split(".")[-1]
+            sql = """select max(timestamp) from sa_db_access_log.user_access_log where user = '%s' and host = '%s' and master_ip like '%%%s'""" % (db_user_item.username, db_user_item.host_ip, db_master_ip_last_seg)
+            cursor_src.execute(sql)
+            result = cursor_src.fetchone()
+            if result[0] == None:
+                user_status = "[never seen]"
+            elif int(result[0]) < int(time.time()) - 86400*30:
+                user_status = "[30+ day not seen]"
+            else:
+                user_status = ""
+            user_list_string += """<a href=/db_survey/modify_user_privilege/?target_cluster=%s&target_user=%s>""" % (self.id, db_user_item.id)  + str(db_user_item.username + "@" + db_user_item.host_ip) + """</a>""" + user_status +"<br>"
+        conn_src.close()
+        return user_list_string
+    user_list = property(_user_list)
 
 class db_schema(models.Model):
     belong_to_cluster = models.ForeignKey(db_cluster)
@@ -255,7 +276,7 @@ class db_table(models.Model):
 
     def get_display_fields(self, for_modify = False):
         if for_modify == False:
-            return ['table_name','table_def','last_day_active']
+            return ['table_name','table_def','last_day_active','last_week_active','last_month_active']
         else:
             return ['id','table_name','table_primary_keys','table_def']
 
@@ -332,16 +353,27 @@ class db_table(models.Model):
         return self.db_column_set.count()
     column_count = property(_column_count)
 
-    def _last_day_active(self):
+    def _last_active(self,days):
         #Retun the picture path with html tag of the RDD tool pic, in last day
         for check_item in check_item_list:
             table_name = self.table_name
             schema_name = self.belong_to_schema.schema_name
             cluster_name = self.belong_to_schema.belong_to_cluster.db_name
-            rrd_pic_path = get_rrd_pic_path(check_item,cluster_name,schema_name,table_name)
+            rrd_pic_path = get_rrd_pic_path(check_item,cluster_name,schema_name,table_name, days)
             return '''<img src="/media/%s" />''' % (rrd_pic_path)
 
+    def _last_day_active(self):
+        return self._last_active(1)
+
+    def _last_week_active(self):
+        return self._last_active(7)
+
+    def _last_month_active(self):
+        return self._last_active(30)
+
     last_day_active = property(_last_day_active)
+    last_week_active = property(_last_week_active)
+    last_month_active = property(_last_month_active)
 
 
 class db_table_keys(models.Model):

@@ -39,7 +39,7 @@ def get_rrd_pic_path(check_item,cluster_name,schema_name,table_name,days = 1):
         full_image_path += '.' + schema_name
         if table_name != '':
             full_image_path += '.' + table_name
-    full_image_path += '.png'
+    full_image_path += '.%s.png' % days
     #Reference
     #rrdtool graph target.png --start 1357622790 --end 1357623120 DEF:mymem=target.rrd:mem:AVERAGE LINE1:mymem#FF0000
     graph(str(full_image_path),
